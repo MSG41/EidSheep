@@ -30,20 +30,15 @@ export default {
     let lastY = 0
 
     // Render Loop
-    // Render Loop
     const animate = function () {
       requestAnimationFrame(animate)
-
-      // Check if the model is loaded and add rotation to it
       if (model) {
         model.rotation.y += 0.005
       }
-
       renderer!.render(scene!, camera!)
     }
 
     onMounted(() => {
-      // Setup THREE.js
       scene = new THREE.Scene()
       scene.add(new THREE.HemisphereLight(0xffffff, 0x000000, 1))
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -53,7 +48,6 @@ export default {
       renderer.setSize(window.innerWidth, window.innerHeight)
       mount.value?.appendChild(renderer.domElement)
 
-      // Load Model
       const loader = new GLTFLoader()
       loader.load(
         sheep,
@@ -66,20 +60,17 @@ export default {
         (error) => console.error(error)
       )
 
-      // Add a resize event listener to the window
       window.addEventListener('resize', () => {
         if (camera && renderer) {
-          // Update the camera's aspect ratio and projection matrix
           camera.aspect = window.innerWidth / window.innerHeight
           camera.updateProjectionMatrix()
-
-          // Update the renderer's size to match the window's dimensions
           renderer.setSize(window.innerWidth, window.innerHeight)
         }
       })
     })
 
     const startRotation = (event: MouseEvent | TouchEvent) => {
+      event.preventDefault()
       isRotating = true
       const { clientX, clientY } = 'touches' in event ? event.touches[0] : event
       lastX = clientX
@@ -87,6 +78,7 @@ export default {
     }
 
     const updateRotation = (event: MouseEvent | TouchEvent) => {
+      event.preventDefault()
       if (!isRotating || !model) return
 
       const { clientX, clientY } = 'touches' in event ? event.touches[0] : event
