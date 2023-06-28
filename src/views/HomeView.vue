@@ -8,7 +8,7 @@
 <script lang="ts">
 import { ref } from 'vue'
 import SheepComponent from '@/components/Sheep/Sheep.vue'
-import sheepSound from '@/assets/Sheep.mp3'
+import Sheep from '@/assets/Sheep.mp3'
 
 export default {
   name: 'HomeView',
@@ -22,7 +22,7 @@ export default {
 
     const onClickSheepContainer = () => {
       // Create a new audio instance each time to trigger the sound
-      audio = new Audio(sheepSound)
+      audio = new Audio(Sheep)
       audio.play()
       // Toggle the message visibility
       show.value = !show.value

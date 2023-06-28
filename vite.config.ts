@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -9,5 +8,5 @@ export default defineConfig({
       '@': '/Users/salim/Desktop/EidSheep/EidSheep/EidSheep/src'
     }
   },
-  assetsInclude: ['**/*.glb']
+  assetsInclude: ['**/*.glb', '**/*.mp3']
 })
