@@ -42,8 +42,6 @@ export default {
 .sheep-container {
   width: 100%;
   height: 100%;
-  max-width: 500px;
-  max-height: 500px;
   perspective: 800px;
   display: flex;
   justify-content: center;
@@ -51,9 +49,9 @@ export default {
 }
 
 .message {
-  position: absolute;
-  top: 30%;
-  margin: auto;
+  position: fixed;
+  top: 70px;
+  right: 20px;
   cursor: pointer;
   background: rgba(0, 0, 0, 0.5);
   color: white;

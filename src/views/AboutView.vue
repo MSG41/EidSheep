@@ -37,10 +37,11 @@
 
 <style>
 .about {
-  margin: 60px auto;
-  width: 90vw;
+  position: absolute;
+  top: 60px;
+  margin: auto 1rem;
   max-width: 800px;
-  padding: 20px;
+  padding: 0 30px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
