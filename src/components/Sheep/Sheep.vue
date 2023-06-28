@@ -2,71 +2,56 @@
   <div
     class="sheep-component"
     ref="mount"
-    @mousedown="onMouseDown"
-    @mousemove="onMouseMove"
-    @mouseup="onMouseUp"
-    @touchstart="onTouchStart"
-    @touchmove="onTouchMove"
-    @touchend="onTouchEnd"
+    @mousedown="startRotation"
+    @mousemove="updateRotation"
+    @mouseup="stopRotation"
+    @touchstart="startRotation"
+    @touchmove="updateRotation"
+    @touchend="stopRotation"
   ></div>
 </template>
 
 <script lang="ts">
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as THREE from 'three'
-import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref } from 'vue'
 import sheep from '@/assets/sheep.glb'
 
 export default {
   name: 'SheepComponent',
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
-  },
-  setup(props) {
+  setup() {
     const mount = ref<HTMLElement | null>(null)
     let scene: THREE.Scene | null = null
     let camera: THREE.PerspectiveCamera | null = null
     let renderer: THREE.WebGLRenderer | null = null
-    let animationFrameId: number | null = null
     let model: THREE.Group | null = null
-    let raycaster: THREE.Raycaster | null = null
-    let mouse: THREE.Vector2 | null = null
-    let touch: THREE.Vector2 | null = null
-    let isDragging = false
-    let previousMouseX = 0
+    let isRotating = false
+    let lastX = 0
+    let lastY = 0
 
     // Render Loop
+    // Render Loop
     const animate = function () {
-      animationFrameId = requestAnimationFrame(animate)
+      requestAnimationFrame(animate)
+
+      // Check if the model is loaded and add rotation to it
       if (model) {
-        model.rotation.y += 0.01 // Rotate the model continuously
+        model.rotation.y += 0.005
       }
+
       renderer!.render(scene!, camera!)
     }
 
     onMounted(() => {
-      // Scene
+      // Setup THREE.js
       scene = new THREE.Scene()
-
-      // Lighting
-      const light = new THREE.HemisphereLight(0xffffff, 0x000000, 1)
-      scene.add(light)
-
-      // Camera
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x000000, 1))
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-      camera.position.z = 10 // Adjust camera position to ensure the model is in view
-
-      // Renderer
-      renderer = new THREE.WebGLRenderer({ antialias: true })
+      camera.position.z = 10
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      renderer.setClearColor(0xffffff)
       renderer.setSize(window.innerWidth, window.innerHeight)
       mount.value?.appendChild(renderer.domElement)
-
-      // Mouse and Raycaster
-      mouse = new THREE.Vector2()
-      raycaster = new THREE.Raycaster()
 
       // Load Model
       const loader = new GLTFLoader()
@@ -74,86 +59,60 @@ export default {
         sheep,
         (gltf) => {
           model = gltf.scene
-          model.scale.set(1, 1, 1) // Scale the model
           scene!.add(model)
-          // Start animation
           animate()
         },
         undefined,
         (error) => console.error(error)
       )
+
+      // Add a resize event listener to the window
+      window.addEventListener('resize', () => {
+        if (camera && renderer) {
+          // Update the camera's aspect ratio and projection matrix
+          camera.aspect = window.innerWidth / window.innerHeight
+          camera.updateProjectionMatrix()
+
+          // Update the renderer's size to match the window's dimensions
+          renderer.setSize(window.innerWidth, window.innerHeight)
+        }
+      })
     })
 
-    const onMouseMove = (event: MouseEvent) => {
-      // Update the mouse position
-      if (isDragging) {
-        const currentMouseX = event.clientX
-        const deltaX = currentMouseX - previousMouseX
-
-        // Rotate the model based on the mouse movement
-        if (model) {
-          model.rotation.y += deltaX * 0.01
-        }
-
-        previousMouseX = currentMouseX
-      }
+    const startRotation = (event: MouseEvent | TouchEvent) => {
+      isRotating = true
+      const { clientX, clientY } = 'touches' in event ? event.touches[0] : event
+      lastX = clientX
+      lastY = clientY
     }
 
-    const onMouseDown = (event: MouseEvent) => {
-      isDragging = true
-      previousMouseX = event.clientX
+    const updateRotation = (event: MouseEvent | TouchEvent) => {
+      if (!isRotating || !model) return
+
+      const { clientX, clientY } = 'touches' in event ? event.touches[0] : event
+      const deltaX = (clientX - lastX) * 0.01
+      const deltaY = (clientY - lastY) * 0.01
+
+      model.rotation.y += deltaX
+      model.rotation.x += deltaY
+
+      lastX = clientX
+      lastY = clientY
     }
 
-    const onMouseUp = () => {
-      isDragging = false
+    const stopRotation = () => {
+      isRotating = false
     }
-
-    const onTouchStart = (event: TouchEvent) => {
-      const touchEvent = event.touches[0]
-      touch = new THREE.Vector2(touchEvent.clientX, touchEvent.clientY)
-    }
-
-    const onTouchMove = (event: TouchEvent) => {
-      event.preventDefault()
-      const touchEvent = event.touches[0]
-      const currentTouch = new THREE.Vector2(touchEvent.clientX, touchEvent.clientY)
-      const deltaX = currentTouch.x - touch!.x
-
-      // Rotate the model based on the touch movement
-      if (model) {
-        model.rotation.y += deltaX * 0.01
-      }
-
-      touch = currentTouch
-    }
-
-    const onTouchEnd = () => {
-      touch = null
-    }
-
-    //   const onClick = () => {
-    //     if (!props.show && model) {
-    //       // If the sheep is clicked and the message is not shown, play the sound
-    //       audio.play()
-    //       // Emit the clickMessage event to hide the message
-    //       emit('clickMessage')
-    //     }
-    //   }
 
     onBeforeUnmount(() => {
-      // Stop animation and remove the canvas on component unmount
-      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId)
       mount.value?.removeChild(renderer!.domElement)
     })
 
     return {
       mount,
-      onMouseDown,
-      onMouseMove,
-      onMouseUp,
-      onTouchStart,
-      onTouchMove,
-      onTouchEnd
+      startRotation,
+      updateRotation,
+      stopRotation
     }
   }
 }
@@ -162,6 +121,8 @@ export default {
 <style lang="scss" scoped>
 .sheep-component {
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   background-color: white;
