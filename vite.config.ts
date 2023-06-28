@@ -8,5 +8,12 @@ export default defineConfig({
       '@': '/Users/salim/Desktop/EidSheep/EidSheep/EidSheep/src'
     }
   },
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name].[ext]'
+      }
+    }
+  },
   assetsInclude: ['**/*.glb', '**/*.mp3']
 })
