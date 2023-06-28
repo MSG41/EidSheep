@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': '/Users/salim/Desktop/EidSheep/EidSheep/EidSheep/src'
+      '@': path.resolve(__dirname, './src')
     }
   },
   build: {
