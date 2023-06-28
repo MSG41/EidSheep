@@ -1,6 +1,13 @@
 {
   "rewrites": [
     {
+      "source": "/assets/Sheep.mp3",
+      "destination": "/assets/Sheep.mp3",
+      "headers": {
+        "Content-Type": "audio/mpeg"
+      }
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
