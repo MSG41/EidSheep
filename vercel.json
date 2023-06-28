@@ -4,6 +4,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "builds": [{ "src": "npm run build", "use": "@vercel/static" }]
+  ]
 }
