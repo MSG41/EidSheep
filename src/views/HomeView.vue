@@ -1,5 +1,10 @@
 <template>
-  <div class="sheep-container" ref="container" @click="onClickSheepContainer">
+  <div
+    class="sheep-container"
+    ref="container"
+    @click="onClickSheepContainer"
+    @touchstart="onClickSheepContainer"
+  >
     <SheepComponent :show="show" @clickMessage="onClickMessage" />
     <div v-if="show" class="message" @click="onClickMessage">Eid Moubarak !!!</div>
   </div>
@@ -28,9 +33,10 @@ export default {
       show.value = !show.value
     }
 
-    const onClickMessage = () => {
+    const onClickMessage = (event: MouseEvent) => {
       // Hide the message
       show.value = false
+      event.stopPropagation()
     }
 
     return { container, onClickSheepContainer, onClickMessage, show }
