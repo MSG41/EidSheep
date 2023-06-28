@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "npm run type-check && npm run build-only",
-    "preview": "vite preview",
+    "build": "npm run copy-assets && vite build",
+    "copy-assets": "cp src/assets/Sheep.mp3 dist/assets/Sheep.mp3",    "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
