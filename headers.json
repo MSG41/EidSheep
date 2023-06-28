@@ -1,0 +1,7 @@
+{
+  "/assets/Sheep.mp3": {
+    "headers": {
+      "Content-Type": "audio/mpeg"
+    }
+  }
+}
