@@ -8,9 +8,12 @@
   "headers": [
     {
       "source": "/assets/Sheep.mp3",
-      "headers": {
-        "file": "headers.json"
-      }
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "audio/mpeg"
+        }
+      ]
     }
   ]
 }
