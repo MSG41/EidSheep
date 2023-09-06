@@ -1,6 +1,6 @@
 # EidSheep
 
-This template should help get you started developing with Vue 3 in Vite.
+Displaying a 3D sheep that produces sound when clicked on. The sheep can be rotated using the left mouse click or touch on mobile. 
 
 ## Recommended IDE Setup
 
@@ -33,20 +33,5 @@ npm install
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
 
-```sh
-npm run build
-```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
